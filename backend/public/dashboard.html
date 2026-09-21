@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz Dashboard</title>
+</head>
+
+<body>
+
+    <h1>Online Quiz Dashboard</h1>
+
+    <h2>Welcome!</h2>
+
+    <p>You are successfully logged in.</p>
+
+    <button onclick="logout()">Logout</button>
+
+    <script>
+
+        async function logout() {
+
+            const response = await fetch("/api/auth/logout", {
+                method: "POST"
+            });
+
+            const data = await response.json();
+
+            alert(data.message);
+
+            window.location.href = "/login.html";
+        }
+
+    </script>
+
+</body>
+</html>
