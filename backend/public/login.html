@@ -1,561 +1,363 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Login | QuizMaster</title>
+<title>Login | QuizMaster</title>
 
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
 
-    <style>
+    body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+    .container {
+        width: 100%;
+        max-width: 1000px;
+        min-height: 600px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
 
+    .left-section {
+        width: 45%;
+        background: linear-gradient(160deg, #4f46e5, #7c3aed);
+        color: white;
+        padding: 60px 45px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-        body {
+    .logo {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 50px;
+    }
 
-            min-height: 100vh;
+    .left-section h1 {
+        font-size: 42px;
+        line-height: 1.2;
+        margin-bottom: 20px;
+    }
 
-            background: linear-gradient(
-                135deg,
-                #667eea,
-                #764ba2
-            );
+    .left-section p {
+        font-size: 16px;
+        line-height: 1.7;
+        opacity: 0.9;
+    }
 
-            display: flex;
+    .features {
+        margin-top: 35px;
+    }
 
-            align-items: center;
+    .feature {
+        display: flex;
+        align-items: center;
+        margin-bottom: 18px;
+        font-size: 15px;
+    }
 
-            justify-content: center;
+    .feature span {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+    }
 
-            padding: 20px;
+    .right-section {
+        width: 55%;
+        padding: 55px 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
 
-        }
+    .right-section h2 {
+        font-size: 32px;
+        color: #222;
+        margin-bottom: 8px;
+    }
 
+    .subtitle {
+        color: #777;
+        margin-bottom: 30px;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper input {
+        width: 100%;
+        padding: 14px 45px 14px 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.3s;
+    }
+
+    .input-wrapper input:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #777;
+        font-size: 13px;
+        user-select: none;
+    }
+
+    .login-button,
+    .reset-button {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 5px;
+    }
+
+    .login-button:hover,
+    .reset-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+    }
+
+    .login-button:disabled,
+    .reset-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .forgot-link {
+        text-align: right;
+        margin-top: 10px;
+        margin-bottom: 15px;
+    }
+
+    .forgot-link a {
+        color: #4f46e5;
+        font-size: 13px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .forgot-link a:hover {
+        text-decoration: underline;
+    }
+
+    .back-login {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .back-login a {
+        color: #4f46e5;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .message {
+        margin-top: 18px;
+        padding: 12px;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 14px;
+        display: none;
+    }
+
+    .success {
+        display: block;
+        background: #ecfdf5;
+        color: #047857;
+        border: 1px solid #a7f3d0;
+    }
+
+    .error {
+        display: block;
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+    }
+
+    .signup-link {
+        text-align: center;
+        margin-top: 25px;
+        font-size: 14px;
+        color: #777;
+    }
+
+    .signup-link a {
+        color: #4f46e5;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .signup-link a:hover {
+        text-decoration: underline;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .reset-title {
+        font-size: 28px;
+        color: #222;
+        margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
 
         .container {
-
-            width: 100%;
-
-            max-width: 1000px;
-
-            min-height: 600px;
-
-            background: white;
-
-            border-radius: 20px;
-
-            overflow: hidden;
-
-            display: flex;
-
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, 0.2);
-
+            flex-direction: column;
+            max-width: 500px;
         }
-
-
-        /* LEFT SECTION */
 
         .left-section {
-
-            width: 45%;
-
-            background: linear-gradient(
-                160deg,
-                #4f46e5,
-                #7c3aed
-            );
-
-            color: white;
-
-            padding: 60px 45px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: center;
-
+            width: 100%;
+            padding: 35px;
         }
-
-
-        .logo {
-
-            font-size: 28px;
-
-            font-weight: bold;
-
-            margin-bottom: 50px;
-
-        }
-
 
         .left-section h1 {
-
-            font-size: 42px;
-
-            line-height: 1.2;
-
-            margin-bottom: 20px;
-
+            font-size: 30px;
         }
 
-
-        .left-section p {
-
-            font-size: 16px;
-
-            line-height: 1.7;
-
-            opacity: 0.9;
-
+        .logo {
+            margin-bottom: 25px;
         }
-
 
         .features {
-
-            margin-top: 35px;
-
+            display: none;
         }
-
-
-        .feature {
-
-            display: flex;
-
-            align-items: center;
-
-            margin-bottom: 18px;
-
-            font-size: 15px;
-
-        }
-
-
-        .feature span {
-
-            width: 30px;
-
-            height: 30px;
-
-            border-radius: 50%;
-
-            background: rgba(255, 255, 255, 0.2);
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            margin-right: 12px;
-
-        }
-
-
-        /* RIGHT SECTION */
 
         .right-section {
-
-            width: 55%;
-
-            padding: 55px 60px;
-
-            display: flex;
-
-            flex-direction: column;
-
-            justify-content: center;
-
-        }
-
-
-        .right-section h2 {
-
-            font-size: 32px;
-
-            color: #222;
-
-            margin-bottom: 8px;
-
-        }
-
-
-        .subtitle {
-
-            color: #777;
-
-            margin-bottom: 30px;
-
-            font-size: 14px;
-
-        }
-
-
-        .form-group {
-
-            margin-bottom: 20px;
-
-        }
-
-
-        .form-group label {
-
-            display: block;
-
-            margin-bottom: 8px;
-
-            font-size: 14px;
-
-            font-weight: 600;
-
-            color: #333;
-
-        }
-
-
-        .input-wrapper {
-
-            position: relative;
-
-        }
-
-
-        .input-wrapper input {
-
             width: 100%;
-
-            padding: 14px 45px 14px 15px;
-
-            border: 1px solid #ddd;
-
-            border-radius: 10px;
-
-            font-size: 14px;
-
-            outline: none;
-
-            transition: 0.3s;
-
+            padding: 40px 30px;
         }
-
-
-        .input-wrapper input:focus {
-
-            border-color: #6366f1;
-
-            box-shadow:
-                0 0 0 3px
-                rgba(99, 102, 241, 0.1);
-
-        }
-
-
-        .toggle-password {
-
-            position: absolute;
-
-            right: 15px;
-
-            top: 50%;
-
-            transform: translateY(-50%);
-
-            cursor: pointer;
-
-            color: #777;
-
-            font-size: 13px;
-
-            user-select: none;
-
-        }
-
-
-        .login-button {
-
-            width: 100%;
-
-            padding: 15px;
-
-            border: none;
-
-            border-radius: 10px;
-
-            background: linear-gradient(
-                135deg,
-                #4f46e5,
-                #7c3aed
-            );
-
-            color: white;
-
-            font-size: 16px;
-
-            font-weight: bold;
-
-            cursor: pointer;
-
-            transition: 0.3s;
-
-            margin-top: 5px;
-
-        }
-
-
-        .login-button:hover {
-
-            transform: translateY(-2px);
-
-            box-shadow:
-                0 8px 20px
-                rgba(79, 70, 229, 0.3);
-
-        }
-
-
-        .login-button:disabled {
-
-            opacity: 0.6;
-
-            cursor: not-allowed;
-
-            transform: none;
-
-        }
-
-
-        .message {
-
-            margin-top: 18px;
-
-            padding: 12px;
-
-            border-radius: 8px;
-
-            text-align: center;
-
-            font-size: 14px;
-
-            display: none;
-
-        }
-
-
-        .success {
-
-            display: block;
-
-            background: #ecfdf5;
-
-            color: #047857;
-
-            border: 1px solid #a7f3d0;
-
-        }
-
-
-        .error {
-
-            display: block;
-
-            background: #fef2f2;
-
-            color: #b91c1c;
-
-            border: 1px solid #fecaca;
-
-        }
-
-
-        .signup-link {
-
-            text-align: center;
-
-            margin-top: 25px;
-
-            font-size: 14px;
-
-            color: #777;
-
-        }
-
-
-        .signup-link a {
-
-            color: #4f46e5;
-
-            font-weight: bold;
-
-            text-decoration: none;
-
-        }
-
-
-        .signup-link a:hover {
-
-            text-decoration: underline;
-
-        }
-
-
-        /* MOBILE */
-
-        @media (max-width: 768px) {
-
-            .container {
-
-                flex-direction: column;
-
-                max-width: 500px;
-
-            }
-
-
-            .left-section {
-
-                width: 100%;
-
-                padding: 35px;
-
-            }
-
-
-            .left-section h1 {
-
-                font-size: 30px;
-
-            }
-
-
-            .logo {
-
-                margin-bottom: 25px;
-
-            }
-
-
-            .features {
-
-                display: none;
-
-            }
-
-
-            .right-section {
-
-                width: 100%;
-
-                padding: 40px 30px;
-
-            }
-
-        }
-
-    </style>
+    }
+</style>
+```
 
 </head>
 
-
 <body>
 
+```
+<div class="container">
 
-    <div class="container">
+    <!-- LEFT SECTION -->
 
+    <div class="left-section">
 
-        <!-- LEFT SECTION -->
+        <div class="logo">
+            QuizMaster
+        </div>
 
-        <div class="left-section">
+        <h1>
+            Welcome back!
+        </h1>
 
-            <div class="logo">
-                QuizMaster
+        <p>
+            Login to your account and continue
+            your learning journey with interactive
+            quizzes and assessments.
+        </p>
+
+        <div class="features">
+
+            <div class="feature">
+                <span>✓</span>
+                Take online quizzes
             </div>
 
+            <div class="feature">
+                <span>✓</span>
+                View your results
+            </div>
 
-            <h1>
-                Welcome back!
-            </h1>
+            <div class="feature">
+                <span>✓</span>
+                Track your progress
+            </div>
 
-
-            <p>
-
-                Login to your account and continue
-                your learning journey with interactive
-                quizzes and assessments.
-
-            </p>
-
-
-            <div class="features">
-
-                <div class="feature">
-
-                    <span>✓</span>
-
-                    Take online quizzes
-
-                </div>
-
-
-                <div class="feature">
-
-                    <span>✓</span>
-
-                    View your results
-
-                </div>
-
-
-                <div class="feature">
-
-                    <span>✓</span>
-
-                    Track your progress
-
-                </div>
-
-
-                <div class="feature">
-
-                    <span>✓</span>
-
-                    Secure authentication
-
-                </div>
-
+            <div class="feature">
+                <span>✓</span>
+                Secure authentication
             </div>
 
         </div>
 
+    </div>
 
-        <!-- RIGHT SECTION -->
 
-        <div class="right-section">
+    <!-- RIGHT SECTION -->
 
+    <div class="right-section">
+
+        <!-- LOGIN FORM -->
+
+        <div id="loginSection">
 
             <h2>
                 Login
             </h2>
 
-
             <p class="subtitle">
-
                 Enter your account details to continue.
-
             </p>
 
-
             <form id="loginForm">
-
 
                 <!-- EMAIL -->
 
@@ -564,7 +366,6 @@
                     <label for="email">
                         Email Address
                     </label>
-
 
                     <div class="input-wrapper">
 
@@ -588,7 +389,6 @@
                         Password
                     </label>
 
-
                     <div class="input-wrapper">
 
                         <input
@@ -597,7 +397,6 @@
                             placeholder="Enter your password"
                             required
                         >
-
 
                         <span
                             class="toggle-password"
@@ -611,6 +410,17 @@
                 </div>
 
 
+                <!-- FORGOT PASSWORD -->
+
+                <div class="forgot-link">
+
+                    <a onclick="showForgotPassword()">
+                        Forgot Password?
+                    </a>
+
+                </div>
+
+
                 <!-- LOGIN BUTTON -->
 
                 <button
@@ -618,19 +428,16 @@
                     class="login-button"
                     id="loginButton"
                 >
-
                     Login
-
                 </button>
 
 
-                <!-- MESSAGE -->
+                <!-- LOGIN MESSAGE -->
 
                 <div
                     id="message"
                     class="message"
                 ></div>
-
 
             </form>
 
@@ -647,209 +454,469 @@
 
             </div>
 
+        </div>
+
+
+        <!-- FORGOT PASSWORD SECTION -->
+
+        <div id="forgotSection" class="hidden">
+
+            <h2 class="reset-title">
+                Reset Password
+            </h2>
+
+            <p class="subtitle">
+                Enter your email and create a new password.
+            </p>
+
+            <form id="forgotForm">
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="forgotEmail">
+                        Email Address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="email"
+                            id="forgotEmail"
+                            placeholder="Enter your registered email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- NEW PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="newPassword">
+                        New Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="newPassword"
+                            placeholder="Enter new password"
+                            minlength="6"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- CONFIRM PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Confirm new password"
+                            minlength="6"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- RESET BUTTON -->
+
+                <button
+                    type="submit"
+                    class="reset-button"
+                    id="resetButton"
+                >
+                    Reset Password
+                </button>
+
+
+                <!-- RESET MESSAGE -->
+
+                <div
+                    id="resetMessage"
+                    class="message"
+                ></div>
+
+            </form>
+
+
+            <!-- BACK TO LOGIN -->
+
+            <div class="back-login">
+
+                <a onclick="showLogin()">
+                    ← Back to Login
+                </a>
+
+            </div>
 
         </div>
 
     </div>
 
+</div>
 
 
-    <script>
+<script>
 
+    // ================================
+    // SHOW / HIDE LOGIN PASSWORD
+    // ================================
 
-        // SHOW / HIDE PASSWORD
+    function togglePassword() {
 
-        function togglePassword() {
+        const password =
+            document.getElementById("password");
 
-            const password =
-                document.getElementById("password");
+        const toggle =
+            document.querySelector(".toggle-password");
 
-            const toggle =
-                document.querySelector(".toggle-password");
+        if (password.type === "password") {
 
+            password.type = "text";
+            toggle.innerText = "Hide";
 
-            if (password.type === "password") {
+        } else {
 
-                password.type = "text";
-
-                toggle.innerText = "Hide";
-
-            }
-
-            else {
-
-                password.type = "password";
-
-                toggle.innerText = "Show";
-
-            }
+            password.type = "password";
+            toggle.innerText = "Show";
 
         }
 
+    }
 
 
-        // LOGIN FORM
+    // ================================
+    // SHOW FORGOT PASSWORD
+    // ================================
+
+    function showForgotPassword() {
 
         document
-            .getElementById("loginForm")
-            .addEventListener(
-                "submit",
-                async function(event) {
+            .getElementById("loginSection")
+            .classList
+            .add("hidden");
 
-                    event.preventDefault();
+        document
+            .getElementById("forgotSection")
+            .classList
+            .remove("hidden");
 
-
-                    const email =
-                        document
-                            .getElementById("email")
-                            .value
-                            .trim();
+    }
 
 
-                    const password =
-                        document
-                            .getElementById("password")
-                            .value;
+    // ================================
+    // BACK TO LOGIN
+    // ================================
+
+    function showLogin() {
+
+        document
+            .getElementById("forgotSection")
+            .classList
+            .add("hidden");
+
+        document
+            .getElementById("loginSection")
+            .classList
+            .remove("hidden");
+
+    }
 
 
-                    const message =
-                        document
-                            .getElementById("message");
+    // ================================
+    // LOGIN FORM
+    // ================================
 
+    document
+        .getElementById("loginForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
 
-                    const button =
-                        document
-                            .getElementById("loginButton");
+                event.preventDefault();
 
+                const email =
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim();
 
-                    // Clear previous message
+                const password =
+                    document
+                        .getElementById("password")
+                        .value;
 
-                    message.className = "message";
+                const message =
+                    document
+                        .getElementById("message");
 
-                    message.innerText = "";
+                const button =
+                    document
+                        .getElementById("loginButton");
 
+                message.className = "message";
+                message.innerText = "";
 
-                    // Disable button
+                button.disabled = true;
+                button.innerText = "Logging in...";
 
-                    button.disabled = true;
+                try {
 
-                    button.innerText =
-                        "Logging in...";
+                    const response =
+                        await fetch(
+                            "/api/auth/login",
+                            {
+                                method: "POST",
 
-
-                    try {
-
-
-                        const response =
-                            await fetch(
-                                "/api/auth/login",
-                                {
-
-                                    method: "POST",
-
-                                    headers: {
-
-                                        "Content-Type":
-                                            "application/json"
-
-                                    },
-
-                                    body: JSON.stringify({
-
-                                        email: email,
-
-                                        password: password
-
-                                    })
-
-                                }
-                            );
-
-
-                        const data =
-                            await response.json();
-
-
-                        if (response.ok) {
-
-
-                            message.className =
-                                "message success";
-
-
-                            message.innerText =
-                                "Login successful! Redirecting...";
-
-
-                            /*
-                             * Store the user's role.
-                             * This can be used later for
-                             * student/teacher dashboards.
-                             */
-
-                            if (data.role) {
-
-                                sessionStorage.setItem(
-                                    "userRole",
-                                    data.role
-                                );
-
-                            }
-
-
-                            setTimeout(
-                                function() {
-
-                                    window.location.href =
-                                        "dashboard.html";
-
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
                                 },
-                                1000
+
+                                body: JSON.stringify({
+                                    email: email,
+                                    password: password
+                                })
+                            }
+                        );
+
+                    const data =
+                        await response.json();
+
+                    if (response.ok) {
+
+                        message.className =
+                            "message success";
+
+                        message.innerText =
+                            "Login successful! Redirecting...";
+
+                        if (data.user) {
+
+                            sessionStorage.setItem(
+                                "userRole",
+                                data.user.role
+                            );
+
+                            sessionStorage.setItem(
+                                "userName",
+                                data.user.name
                             );
 
                         }
 
-                        else {
+                        setTimeout(
+                            function() {
 
+                                window.location.href =
+                                    "dashboard.html";
 
-                            message.className =
-                                "message error";
+                            },
+                            1000
+                        );
 
-
-                            message.innerText =
-                                data.message ||
-                                "Invalid email or password.";
-
-                        }
-
-
-                    }
-
-                    catch (error) {
-
+                    } else {
 
                         message.className =
                             "message error";
 
-
                         message.innerText =
-                            "Unable to connect to the server.";
+                            data.message ||
+                            "Invalid email or password.";
 
                     }
 
+                } catch (error) {
 
-                    // Enable button
+                    console.error(error);
 
-                    button.disabled = false;
+                    message.className =
+                        "message error";
 
-                    button.innerText =
-                        "Login";
+                    message.innerText =
+                        "Unable to connect to the server.";
 
                 }
-            );
 
-    </script>
+                button.disabled = false;
+                button.innerText = "Login";
 
+            }
+        );
+
+
+    // ================================
+    // FORGOT PASSWORD FORM
+    // ================================
+
+    document
+        .getElementById("forgotForm")
+        .addEventListener(
+            "submit",
+            async function(event) {
+
+                event.preventDefault();
+
+                const email =
+                    document
+                        .getElementById("forgotEmail")
+                        .value
+                        .trim();
+
+                const newPassword =
+                    document
+                        .getElementById("newPassword")
+                        .value;
+
+                const confirmPassword =
+                    document
+                        .getElementById("confirmPassword")
+                        .value;
+
+                const message =
+                    document
+                        .getElementById("resetMessage");
+
+                const button =
+                    document
+                        .getElementById("resetButton");
+
+
+                // Check password match
+
+                if (newPassword !== confirmPassword) {
+
+                    message.className =
+                        "message error";
+
+                    message.innerText =
+                        "Passwords do not match.";
+
+                    return;
+
+                }
+
+
+                // Check password length
+
+                if (newPassword.length < 6) {
+
+                    message.className =
+                        "message error";
+
+                    message.innerText =
+                        "Password must be at least 6 characters.";
+
+                    return;
+
+                }
+
+
+                button.disabled = true;
+                button.innerText = "Resetting...";
+
+                message.className = "message";
+                message.innerText = "";
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            "/api/auth/forgot-password",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body: JSON.stringify({
+                                    email: email,
+                                    newPassword: newPassword
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (response.ok) {
+
+                        message.className =
+                            "message success";
+
+                        message.innerText =
+                            "Password reset successfully!";
+
+                        document
+                            .getElementById("forgotForm")
+                            .reset();
+
+                        setTimeout(
+                            function() {
+
+                                showLogin();
+
+                            },
+                            1500
+                        );
+
+                    } else {
+
+                        message.className =
+                            "message error";
+
+                        message.innerText =
+                            data.message ||
+                            "Password reset failed.";
+
+                    }
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    message.className =
+                        "message error";
+
+                    message.innerText =
+                        "Unable to connect to the server.";
+
+                }
+
+
+                button.disabled = false;
+                button.innerText = "Reset Password";
+
+            }
+        );
+
+</script>
 
 </body>
 

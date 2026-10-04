@@ -8,7 +8,8 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const quizRoutes = require("./routes/quizRoutes");
-
+const questionRoutes = require("./routes/questionRoutes");
+const resultRoutes = require("./routes/resultRoutes");
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -66,10 +67,10 @@ mongoose
 
 // Quiz routes
 app.use("/api/quizzes", quizRoutes);
-
+app.use("/api/questions", questionRoutes);
 // Authentication routes
 app.use("/api/auth", authRoutes);
-
+app.use("/api/results", resultRoutes);
 // ===============================
 // HOME ROUTE
 // ===============================

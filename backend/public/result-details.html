@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Result Details - QuizMaster</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #374151;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .nav-links a:hover {
+            background: #eef2ff;
+            color: #2563eb;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .header-card {
+            background: white;
+            border-radius: 14px;
+            padding: 30px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .header-card h1 {
+            margin-bottom: 10px;
+        }
+
+        .quiz-info {
+            color: #6b7280;
+        }
+
+        .score-box {
+            margin-top: 25px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .score-item {
+            background: #f9fafb;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .score-item small {
+            display: block;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .score-item strong {
+            font-size: 24px;
+            color: #2563eb;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 18px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+        }
+
+        .question-number {
+            color: #2563eb;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .answer-row {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .selected {
+            background: #eef2ff;
+        }
+
+        .correct {
+            background: #ecfdf5;
+            color: #166534;
+        }
+
+        .wrong {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .answer-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #6b7280;
+            margin-bottom: 5px;
+        }
+
+        .marks {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 8px;
+            color: #4b5563;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #6b7280;
+        }
+
+        .error {
+            background: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 14px;
+        }
+
+        @media (max-width: 768px) {
+
+            .navbar {
+                padding: 0 15px;
+            }
+
+            .score-box {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            QuizMaster
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="results.html">
+                Results
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- MAIN -->
+
+    <div class="container">
+
+        <a
+            href="results.html"
+            class="back-btn"
+        >
+            ← Back to Results
+        </a>
+
+
+        <div id="content">
+
+            <div class="loading">
+                Loading result details...
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+    /* =========================================
+       GET RESULT ID FROM URL
+    ========================================= */
+
+    const params = new URLSearchParams(
+        window.location.search
+    );
+
+    const resultId = params.get("id");
+
+
+    /* =========================================
+       PAGE LOAD
+    ========================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            if (!resultId) {
+
+                showError(
+                    "Result ID is missing from the URL."
+                );
+
+                return;
+            }
+
+            loadResult();
+
+        }
+    );
+
+
+    /* =========================================
+       LOAD RESULT
+    ========================================= */
+
+    async function loadResult() {
+
+        try {
+
+            console.log(
+                "Loading result:",
+                resultId
+            );
+
+
+            const response = await fetch(
+                "/api/results/" +
+                encodeURIComponent(resultId),
+                {
+                    method: "GET",
+                    credentials: "include",
+                    cache: "no-cache"
+                }
+            );
+
+
+            console.log(
+                "Result API status:",
+                response.status
+            );
+
+
+            /* =========================
+               LOGIN CHECK
+            ========================= */
+
+            if (response.status === 401) {
+
+                alert(
+                    "Your session has expired. Please login again."
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return;
+            }
+
+
+            /* =========================
+               RESULT NOT FOUND
+            ========================= */
+
+            if (response.status === 404) {
+
+                showError(
+                    "This result could not be found."
+                );
+
+                return;
+            }
+
+
+            /* =========================
+               SERVER ERROR
+            ========================= */
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Server returned status " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Result API response:",
+                data
+            );
+
+
+            /* =========================
+               CHECK API RESPONSE
+            ========================= */
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to load result."
+                );
+
+            }
+
+
+            if (!data.result) {
+
+                throw new Error(
+                    "Result data is empty."
+                );
+
+            }
+
+
+            displayResult(
+                data.result
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Result loading error:",
+                error
+            );
+
+
+            showError(
+                error.message ||
+                "Unable to load result details."
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       DISPLAY RESULT
+    ========================================= */
+
+    function displayResult(result) {
+
+        const content =
+            document.getElementById(
+                "content"
+            );
+
+
+        const quiz =
+            result.quizId || {};
+
+
+        /* =========================
+           BASIC RESULT INFORMATION
+        ========================= */
+
+        const quizTitle =
+            quiz.title ||
+            "Quiz Result";
+
+
+        const subject =
+            quiz.subject ||
+            "General";
+
+
+        const percentage =
+            Number(
+                result.percentage || 0
+            );
+
+
+        const score =
+            Number(
+                result.score || 0
+            );
+
+
+        const totalMarks =
+            Number(
+                result.totalMarks || 0
+            );
+
+
+        const answers =
+            Array.isArray(result.answers)
+                ? result.answers
+                : [];
+
+
+        const attemptDate =
+            result.createdAt
+                ? new Date(
+                    result.createdAt
+                ).toLocaleString()
+                : "Unknown";
+
+
+        /* =========================
+           CREATE QUESTION HTML
+        ========================= */
+
+        let questionsHTML = "";
+
+
+        if (answers.length === 0) {
+
+            questionsHTML = `
+
+                <div class="error">
+
+                    <h3>
+                        No question details available
+                    </h3>
+
+                    <p style="margin-top:10px;">
+                        The result was saved, but
+                        individual answer details
+                        are not available.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+        else {
+
+            answers.forEach(
+                function (answer, index) {
+
+
+                    /* =========================
+                       QUESTION TEXT
+                    ========================= */
+
+                    const questionText =
+                        answer.questionText ||
+                        (
+                            answer.questionId &&
+                            answer.questionId.text
+                        ) ||
+                        (
+                            answer.questionId &&
+                            answer.questionId.questionText
+                        ) ||
+                        "Question";
+
+
+                    /* =========================
+                       YOUR ANSWER
+                    ========================= */
+
+                    const selectedAnswer =
+                        answer.selectedAnswer !== undefined &&
+                        answer.selectedAnswer !== null
+                            ? answer.selectedAnswer
+                            : "Not answered";
+
+
+                    /* =========================
+                       CORRECT ANSWER
+                    ========================= */
+
+                    const correctAnswer =
+                        answer.correctAnswer !== undefined &&
+                        answer.correctAnswer !== null
+                            ? answer.correctAnswer
+                            : "Not available";
+
+
+                    /* =========================
+                       CHECK CORRECTNESS
+                    ========================= */
+
+                    let isCorrect = false;
+
+
+                    if (
+                        typeof answer.isCorrect ===
+                        "boolean"
+                    ) {
+
+                        isCorrect =
+                            answer.isCorrect;
+
+                    }
+
+                    else {
+
+                        isCorrect =
+                            String(
+                                selectedAnswer
+                            ).trim().toLowerCase()
+                            ===
+                            String(
+                                correctAnswer
+                            ).trim().toLowerCase();
+
+                    }
+
+
+                    /* =========================
+                       MARKS
+                    ========================= */
+
+                    const marks =
+                        answer.marksObtained ??
+                        answer.marks ??
+                        (
+                            isCorrect
+                                ? 1
+                                : 0
+                        );
+
+
+                    /* =========================
+                       CSS CLASS
+                    ========================= */
+
+                    const answerClass =
+                        isCorrect
+                            ? "correct"
+                            : "wrong";
+
+
+                    /* =========================
+                       QUESTION HTML
+                    ========================= */
+
+                    questionsHTML += `
+
+                        <div class="question-card">
+
+                            <div class="question-number">
+
+                                Question ${index + 1}
+
+                            </div>
+
+
+                            <div class="question-text">
+
+                                ${escapeHtml(
+                                    questionText
+                                )}
+
+                            </div>
+
+
+                            <!-- YOUR ANSWER -->
+
+                            <div class="answer-row">
+
+                                <div class="answer-label">
+
+                                    Your Answer
+
+                                </div>
+
+                                <strong>
+
+                                    ${escapeHtml(
+                                        String(
+                                            selectedAnswer
+                                        )
+                                    )}
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- CORRECT ANSWER -->
+
+                            <div class="answer-row correct">
+
+                                <div class="answer-label">
+
+                                    Correct Answer
+
+                                </div>
+
+                                <strong>
+
+                                    ${escapeHtml(
+                                        String(
+                                            correctAnswer
+                                        )
+                                    )}
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- STATUS -->
+
+                            <div class="
+                                answer-row
+                                ${answerClass}
+                            ">
+
+                                <strong>
+
+                                    ${
+                                        isCorrect
+                                            ? "✓ Correct Answer"
+                                            : "✗ Incorrect Answer"
+                                    }
+
+                                </strong>
+
+                            </div>
+
+
+                            <!-- MARKS -->
+
+                            <div class="marks">
+
+                                Marks Obtained:
+                                ${marks}
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           FINAL PAGE
+        ========================================= */
+
+        content.innerHTML = `
+
+            <div class="header-card">
+
+                <h1>
+
+                    ${escapeHtml(
+                        quizTitle
+                    )}
+
+                </h1>
+
+
+                <p class="quiz-info">
+
+                    Subject:
+                    ${escapeHtml(
+                        subject
+                    )}
+
+                </p>
+
+
+                <p class="quiz-info"
+                   style="margin-top:6px;">
+
+                    Attempted:
+                    ${escapeHtml(
+                        attemptDate
+                    )}
+
+                </p>
+
+
+                <div class="score-box">
+
+
+                    <!-- SCORE -->
+
+                    <div class="score-item">
+
+                        <small>
+                            Score
+                        </small>
+
+                        <strong>
+
+                            ${score}
+                            /
+                            ${totalMarks}
+
+                        </strong>
+
+                    </div>
+
+
+                    <!-- PERCENTAGE -->
+
+                    <div class="score-item">
+
+                        <small>
+                            Percentage
+                        </small>
+
+                        <strong>
+
+                            ${percentage.toFixed(2)}%
+
+                        </strong>
+
+                    </div>
+
+
+                    <!-- QUESTIONS -->
+
+                    <div class="score-item">
+
+                        <small>
+                            Questions
+                        </small>
+
+                        <strong>
+
+                            ${answers.length}
+
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <h2 style="
+                margin-bottom:20px;
+            ">
+
+                Answer Review
+
+            </h2>
+
+
+            ${questionsHTML}
+
+        `;
+
+    }
+
+
+    /* =========================================
+       SHOW ERROR
+    ========================================= */
+
+    function showError(message) {
+
+        document.getElementById(
+            "content"
+        ).innerHTML = `
+
+            <div class="error">
+
+                <h2>
+                    Unable to load result
+                </h2>
+
+                <p style="margin-top:10px;">
+
+                    ${escapeHtml(
+                        message
+                    )}
+
+                </p>
+
+
+                <a
+                    href="results.html"
+                    style="
+                        display:inline-block;
+                        margin-top:20px;
+                        color:#2563eb;
+                        font-weight:bold;
+                        text-decoration:none;
+                    "
+                >
+
+                    ← Back to Results
+
+                </a>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =========================================
+       ESCAPE HTML
+    ========================================= */
+
+    function escapeHtml(value) {
+
+        return String(value)
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+</script>
+        
+
+</body>
+
+</html>

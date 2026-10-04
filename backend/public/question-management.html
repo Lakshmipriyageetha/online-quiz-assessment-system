@@ -1,0 +1,2587 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Question Management | QuizMaster</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #1f2937;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        nav {
+            background: #111827;
+            color: white;
+            padding: 18px 40px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        nav h2 {
+            font-size: 24px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            border: none;
+            text-decoration: none;
+            color: white;
+
+            padding: 10px 16px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+        }
+
+        .back-btn {
+            background: #374151;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+        }
+
+        .logout-btn {
+            background: #dc2626;
+        }
+
+        .logout-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+            width: 92%;
+            max-width: 1150px;
+
+            margin: 35px auto;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message {
+            display: none;
+
+            padding: 14px 18px;
+
+            border-radius: 8px;
+
+            margin-bottom: 20px;
+
+            font-weight: bold;
+        }
+
+        .message.success {
+            display: block;
+
+            background: #dcfce7;
+            color: #166534;
+
+            border: 1px solid #86efac;
+        }
+
+        .message.error {
+            display: block;
+
+            background: #fee2e2;
+            color: #991b1b;
+
+            border: 1px solid #fca5a5;
+        }
+
+        .message.info {
+            display: block;
+
+            background: #dbeafe;
+            color: #1e40af;
+
+            border: 1px solid #93c5fd;
+        }
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .card {
+            background: white;
+
+            padding: 28px;
+
+            border-radius: 14px;
+
+            margin-bottom: 25px;
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+        }
+
+        /* =========================
+           QUIZ INFORMATION
+        ========================= */
+
+        .quiz-info {
+            background: #eff6ff;
+
+            border-left: 5px solid #2563eb;
+
+            padding: 22px;
+
+            border-radius: 10px;
+        }
+
+        .quiz-info h3 {
+            font-size: 24px;
+
+            margin-bottom: 10px;
+        }
+
+        .quiz-info p {
+            color: #4b5563;
+
+            line-height: 1.6;
+        }
+
+        .quiz-meta {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+
+            margin-top: 15px;
+        }
+
+        .meta-item {
+            background: white;
+
+            border: 1px solid #dbeafe;
+
+            padding: 8px 13px;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: #f9fafb;
+
+            border: 1px solid #e5e7eb;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+
+            font-weight: bold;
+
+            color: #2563eb;
+
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        input,
+        textarea,
+        select {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            background: white;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+
+            outline: none;
+
+            border-color: #2563eb;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37,99,235,0.1);
+        }
+
+        textarea {
+
+            min-height: 120px;
+
+            resize: vertical;
+        }
+
+        /* =========================
+           OPTIONS
+        ========================= */
+
+        .options-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 15px;
+        }
+
+        .option-wrapper {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .option-letter {
+
+            min-width: 35px;
+
+            height: 35px;
+
+            background: #eff6ff;
+
+            color: #2563eb;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-weight: bold;
+        }
+
+        /* =========================
+           CORRECT ANSWER
+        ========================= */
+
+        .correct-box {
+
+            background: #f0fdf4;
+
+            border: 1px solid #bbf7d0;
+
+            padding: 18px;
+
+            border-radius: 10px;
+        }
+
+        .correct-box label {
+
+            color: #166534;
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .button-row {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 10px;
+        }
+
+        button {
+
+            font-family: inherit;
+        }
+
+        .primary-btn {
+
+            background: #2563eb;
+
+            color: white;
+
+            border: none;
+
+            padding: 13px 24px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 15px;
+        }
+
+        .primary-btn:hover {
+
+            background: #1d4ed8;
+        }
+
+        .primary-btn:disabled {
+
+            background: #93c5fd;
+
+            cursor: not-allowed;
+        }
+
+        .secondary-btn {
+
+            background: #6b7280;
+
+            color: white;
+
+            border: none;
+
+            padding: 13px 24px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        .secondary-btn:hover {
+
+            background: #4b5563;
+        }
+
+        /* =========================
+           QUESTION LIST
+        ========================= */
+
+        .list-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+        .count-box {
+
+            background: #eff6ff;
+
+            color: #1d4ed8;
+
+            padding: 8px 14px;
+
+            border-radius: 20px;
+
+            font-weight: bold;
+
+            font-size: 14px;
+        }
+
+        .question-card {
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 22px;
+
+            margin-bottom: 16px;
+
+            background: white;
+        }
+
+        .question-card:hover {
+
+            border-color: #bfdbfe;
+
+            box-shadow:
+                0 3px 10px
+                rgba(0,0,0,0.05);
+        }
+
+        .question-top {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 12px;
+        }
+
+        .question-number {
+
+            color: #2563eb;
+
+            font-weight: bold;
+        }
+
+        .question-marks {
+
+            background: #eef2ff;
+
+            color: #3730a3;
+
+            padding: 5px 10px;
+
+            border-radius: 15px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+        .question-text {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            line-height: 1.5;
+
+            margin-bottom: 15px;
+        }
+
+        .option {
+
+            background: #f9fafb;
+
+            border: 1px solid #e5e7eb;
+
+            padding: 11px 13px;
+
+            border-radius: 7px;
+
+            margin-bottom: 8px;
+        }
+
+        .option.correct {
+
+            background: #dcfce7;
+
+            border-color: #86efac;
+
+            color: #166534;
+
+            font-weight: bold;
+        }
+
+        .correct-answer {
+
+            margin-top: 15px;
+
+            background: #f0fdf4;
+
+            color: #166534;
+
+            padding: 11px;
+
+            border-radius: 7px;
+
+            font-weight: bold;
+        }
+
+        .delete-btn {
+
+            margin-top: 15px;
+
+            background: #dc2626;
+
+            color: white;
+
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+
+            background: #b91c1c;
+        }
+
+        /* =========================
+           EMPTY / LOADING
+        ========================= */
+
+        .empty {
+
+            text-align: center;
+
+            padding: 45px 20px;
+
+            color: #6b7280;
+        }
+
+        .loading {
+
+            text-align: center;
+
+            padding: 30px;
+
+            color: #6b7280;
+        }
+
+        .spinner {
+
+            width: 35px;
+
+            height: 35px;
+
+            border: 4px solid #e5e7eb;
+
+            border-top-color: #2563eb;
+
+            border-radius: 50%;
+
+            margin: 0 auto 15px;
+
+            animation:
+                spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+
+        }
+
+        /* =========================
+           WARNING
+        ========================= */
+
+        .warning-box {
+
+            background: #fffbeb;
+
+            border: 1px solid #fde68a;
+
+            color: #92400e;
+
+            padding: 16px;
+
+            border-radius: 9px;
+
+            margin-bottom: 20px;
+
+            line-height: 1.6;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media(max-width: 750px) {
+
+            nav {
+
+                padding: 15px 20px;
+            }
+
+            nav h2 {
+
+                font-size: 20px;
+            }
+
+            .container {
+
+                width: 94%;
+            }
+
+            .stats {
+
+                grid-template-columns: 1fr;
+            }
+
+            .options-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+            .button-row {
+
+                flex-direction: column;
+            }
+
+            .question-top {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 8px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav>
+
+    <h2>QuizMaster</h2>
+
+    <div class="nav-buttons">
+
+        <a
+            href="quiz-management.html"
+            class="nav-btn back-btn"
+        >
+            ← Back to Quizzes
+        </a>
+
+        <button
+            class="nav-btn logout-btn"
+            onclick="logout()"
+        >
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+
+    <!-- =================================================
+         PAGE HEADER
+    ================================================== -->
+
+    <div class="page-header">
+
+        <h1>
+            Question Management
+        </h1>
+
+        <p>
+            Add, manage and organize questions for your quiz.
+        </p>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+
+    <div
+        id="message"
+        class="message"
+    ></div>
+
+
+    <!-- =================================================
+         QUIZ INFORMATION
+    ================================================== -->
+
+    <div class="card">
+
+        <div
+            id="quizInfo"
+            class="quiz-info"
+        >
+
+            <div class="loading">
+
+                <div class="spinner"></div>
+
+                Loading quiz information...
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="stats"
+            class="stats"
+            style="display:none;"
+        >
+
+            <div class="stat-box">
+
+                <div
+                    id="questionStat"
+                    class="stat-number"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Total Questions
+                </div>
+
+            </div>
+
+
+            <div class="stat-box">
+
+                <div
+                    id="totalMarksStat"
+                    class="stat-number"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Total Marks
+                </div>
+
+            </div>
+
+
+            <div class="stat-box">
+
+                <div
+                    id="durationStat"
+                    class="stat-number"
+                >
+                    0
+                </div>
+
+                <div class="stat-label">
+                    Minutes
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         WARNING
+    ================================================== -->
+
+    <div
+        id="missingQuizWarning"
+        class="warning-box"
+        style="display:none;"
+    >
+
+        <strong>Quiz ID is missing.</strong>
+
+        <br>
+
+        Please open this page by clicking the
+        <strong>Questions</strong> button from
+        Quiz Management.
+
+        <br><br>
+
+        <a href="quiz-management.html">
+            ← Go back to Quiz Management
+        </a>
+
+    </div>
+
+
+    <!-- =================================================
+         ADD QUESTION
+    ================================================== -->
+
+    <div
+        id="questionFormCard"
+        class="card"
+    >
+
+        <h2>
+            Add New Question
+        </h2>
+
+
+        <div class="warning-box">
+
+            <strong>Teacher / Instructor:</strong>
+
+            Create the question, enter four options,
+            select the correct answer and assign marks.
+
+            <br>
+
+            Students will not see the correct answer
+            while taking the quiz.
+
+        </div>
+
+
+        <form id="questionForm">
+
+
+            <!-- QUESTION -->
+
+            <div class="form-group">
+
+                <label for="questionText">
+
+                    Question
+
+                    <span class="required">*</span>
+
+                </label>
+
+                <textarea
+                    id="questionText"
+                    placeholder="Example: What is the correct way to declare a variable in JavaScript?"
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <!-- OPTIONS -->
+
+            <div class="form-group">
+
+                <label>
+
+                    Answer Options
+
+                    <span class="required">*</span>
+
+                </label>
+
+
+                <div class="options-grid">
+
+
+                    <div class="option-wrapper">
+
+                        <span class="option-letter">
+                            A
+                        </span>
+
+                        <input
+                            id="option1"
+                            type="text"
+                            placeholder="Enter option A"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="option-wrapper">
+
+                        <span class="option-letter">
+                            B
+                        </span>
+
+                        <input
+                            id="option2"
+                            type="text"
+                            placeholder="Enter option B"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="option-wrapper">
+
+                        <span class="option-letter">
+                            C
+                        </span>
+
+                        <input
+                            id="option3"
+                            type="text"
+                            placeholder="Enter option C"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="option-wrapper">
+
+                        <span class="option-letter">
+                            D
+                        </span>
+
+                        <input
+                            id="option4"
+                            type="text"
+                            placeholder="Enter option D"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- CORRECT ANSWER -->
+
+            <div class="form-group correct-box">
+
+                <label for="correctAnswer">
+
+                    Correct Answer
+
+                    <span class="required">*</span>
+
+                </label>
+
+
+                <select
+                    id="correctAnswer"
+                    required
+                >
+
+                    <option value="">
+                        -- Select Correct Answer --
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- MARKS -->
+
+            <div class="form-group">
+
+                <label for="marks">
+
+                    Marks
+
+                    <span class="required">*</span>
+
+                </label>
+
+                <input
+                    id="marks"
+                    type="number"
+                    min="1"
+                    max="100"
+                    value="1"
+                    required
+                >
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-row">
+
+                <button
+                    id="addQuestionBtn"
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Add Question
+                </button>
+
+
+                <button
+                    type="button"
+                    class="secondary-btn"
+                    onclick="clearForm()"
+                >
+                    Clear Form
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+
+    <!-- =================================================
+         QUESTION LIST
+    ================================================== -->
+
+    <div class="card">
+
+        <div class="list-header">
+
+            <h2>
+                Questions in This Quiz
+            </h2>
+
+            <div
+                id="questionCount"
+                class="count-box"
+            >
+                Questions: 0
+            </div>
+
+        </div>
+
+
+        <div id="questionList">
+
+            <div class="loading">
+
+                <div class="spinner"></div>
+
+                Loading questions...
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
+let quizId = null;
+
+let quizData = null;
+
+let questionList = [];
+
+let isSubmitting = false;
+
+
+/* =====================================================
+   GET QUIZ ID
+===================================================== */
+
+function getQuizId() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    return params.get("quizId");
+}
+
+
+/* =====================================================
+   PAGE INITIALIZATION
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        console.log(
+            "Question Management page started."
+        );
+
+        quizId = getQuizId();
+
+        console.log(
+            "Quiz ID:",
+            quizId
+        );
+
+
+        /*
+         * IMPORTANT:
+         * Question Management MUST have quizId.
+         */
+
+        if (!quizId) {
+
+            document.getElementById(
+                "missingQuizWarning"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "questionFormCard"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "quizInfo"
+            ).innerHTML = `
+
+                <h3 style="color:#dc2626;">
+                    No Quiz Selected
+                </h3>
+
+                <p>
+                    Please return to Quiz Management
+                    and click the Questions button.
+                </p>
+
+            `;
+
+
+            document.getElementById(
+                "questionList"
+            ).innerHTML = `
+
+                <div class="empty">
+
+                    <h3>
+                        No quiz selected
+                    </h3>
+
+                    <p style="margin-top:10px;">
+                        Open this page using the
+                        Questions button.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        /*
+         * Quiz ID exists.
+         * Now load quiz and questions.
+         */
+
+        await loadQuiz();
+
+        await loadQuestions();
+
+        updateCorrectAnswerOptions();
+
+    }
+);
+
+
+/* =====================================================
+   API HELPER
+===================================================== */
+
+async function apiRequest(
+    url,
+    options = {}
+) {
+
+    const response =
+        await fetch(
+            url,
+            {
+                credentials: "include",
+
+                cache: "no-store",
+
+                ...options
+            }
+        );
+
+
+    const rawText =
+        await response.text();
+
+
+    let data = null;
+
+
+    if (rawText) {
+
+        try {
+
+            data =
+                JSON.parse(rawText);
+
+        }
+        catch(error) {
+
+            console.error(
+                "Server returned non-JSON:",
+                rawText
+            );
+
+        }
+
+    }
+
+
+    if (!response.ok) {
+
+        const message =
+            data?.message ||
+            `Server error: HTTP ${response.status}`;
+
+        throw new Error(message);
+
+    }
+
+
+    if (!data) {
+
+        throw new Error(
+            "Server returned an invalid response."
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+/* =====================================================
+   LOAD QUIZ
+===================================================== */
+
+async function loadQuiz() {
+
+    try {
+
+        showMessage(
+            "Loading quiz information...",
+            "info"
+        );
+
+
+        const data =
+            await apiRequest(
+                `/api/quizzes/${encodeURIComponent(quizId)}`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (
+            !data.success ||
+            !data.quiz
+        ) {
+
+            throw new Error(
+                data.message ||
+                "Quiz information was not received."
+            );
+
+        }
+
+
+        quizData =
+            data.quiz;
+
+
+        document.getElementById(
+            "quizInfo"
+        ).innerHTML = `
+
+            <h3>
+                ${escapeHTML(quizData.title)}
+            </h3>
+
+            <p>
+                ${escapeHTML(
+                    quizData.description ||
+                    "No description available."
+                )}
+            </p>
+
+            <div class="quiz-meta">
+
+                <div class="meta-item">
+
+                    <strong>Subject:</strong>
+
+                    ${escapeHTML(
+                        quizData.subject ||
+                        "N/A"
+                    )}
+
+                </div>
+
+                <div class="meta-item">
+
+                    <strong>Duration:</strong>
+
+                    ${Number(
+                        quizData.duration
+                    ) || 0}
+
+                    minutes
+
+                </div>
+
+                <div class="meta-item">
+
+                    <strong>Quiz ID:</strong>
+
+                    ${escapeHTML(quizId)}
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        document.getElementById(
+            "durationStat"
+        ).textContent =
+            Number(quizData.duration) || 0;
+
+
+        document.getElementById(
+            "stats"
+        ).style.display =
+            "grid";
+
+
+        hideMessage();
+
+
+        console.log(
+            "Quiz loaded successfully:",
+            quizData
+        );
+
+    }
+    catch(error) {
+
+        console.error(
+            "LOAD QUIZ ERROR:",
+            error
+        );
+
+
+        document.getElementById(
+            "quizInfo"
+        ).innerHTML = `
+
+            <h3 style="color:#dc2626;">
+                Unable to load quiz
+            </h3>
+
+            <p>
+                ${escapeHTML(error.message)}
+            </p>
+
+        `;
+
+
+        showMessage(
+            `Quiz loading failed: ${error.message}`,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD QUESTIONS
+===================================================== */
+
+async function loadQuestions() {
+
+    try {
+
+        const data =
+            await apiRequest(
+                `/api/quizzes/${encodeURIComponent(quizId)}/questions`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Accept":
+                            "application/json"
+                    }
+                }
+            );
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.message ||
+                "Questions could not be loaded."
+            );
+
+        }
+
+
+        questionList =
+            Array.isArray(
+                data.questions
+            )
+                ? data.questions
+                : [];
+
+
+        renderQuestions();
+
+        updateStatistics();
+
+
+        console.log(
+            "Questions loaded:",
+            questionList
+        );
+
+    }
+    catch(error) {
+
+        console.error(
+            "LOAD QUESTIONS ERROR:",
+            error
+        );
+
+
+        document.getElementById(
+            "questionList"
+        ).innerHTML = `
+
+            <div class="empty">
+
+                <h3 style="color:#dc2626;">
+                    Unable to load questions
+                </h3>
+
+                <p style="margin-top:10px;">
+                    ${escapeHTML(error.message)}
+                </p>
+
+                <button
+                    class="primary-btn"
+                    style="margin-top:15px;"
+                    onclick="loadQuestions()"
+                >
+                    Retry
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   RENDER QUESTIONS
+===================================================== */
+
+function renderQuestions() {
+
+    const list =
+        document.getElementById(
+            "questionList"
+        );
+
+
+    document.getElementById(
+        "questionCount"
+    ).textContent =
+        `Questions: ${questionList.length}`;
+
+
+    if (
+        questionList.length === 0
+    ) {
+
+        list.innerHTML = `
+
+            <div class="empty">
+
+                <div style="font-size:45px;">
+                    📝
+                </div>
+
+                <h3 style="margin-top:10px;">
+                    No questions added yet
+                </h3>
+
+                <p style="margin-top:8px;">
+                    Add your first question
+                    using the form above.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML = "";
+
+
+    questionList.forEach(
+        function(question, index) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "question-card";
+
+
+            /* TOP */
+
+            const top =
+                document.createElement(
+                    "div"
+                );
+
+            top.className =
+                "question-top";
+
+
+            const number =
+                document.createElement(
+                    "div"
+                );
+
+            number.className =
+                "question-number";
+
+            number.textContent =
+                `Question ${index + 1}`;
+
+
+            const marks =
+                document.createElement(
+                    "div"
+                );
+
+            marks.className =
+                "question-marks";
+
+            marks.textContent =
+                `Marks: ${
+                    Number(question.marks) || 1
+                }`;
+
+
+            top.appendChild(number);
+
+            top.appendChild(marks);
+
+            card.appendChild(top);
+
+
+            /* QUESTION TEXT */
+
+            const questionText =
+                document.createElement(
+                    "div"
+                );
+
+            questionText.className =
+                "question-text";
+
+            questionText.textContent =
+                question.questionText || "";
+
+
+            card.appendChild(
+                questionText
+            );
+
+
+            /* OPTIONS */
+
+            const options =
+                Array.isArray(
+                    question.options
+                )
+                    ? question.options
+                    : [];
+
+
+            options.forEach(
+                function(
+                    option,
+                    optionIndex
+                ) {
+
+                    const optionDiv =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    optionDiv.className =
+                        "option";
+
+
+                    const isCorrect =
+                        String(option).trim() ===
+                        String(
+                            question.correctAnswer
+                        ).trim();
+
+
+                    if (isCorrect) {
+
+                        optionDiv.classList.add(
+                            "correct"
+                        );
+
+                    }
+
+
+                    const letter =
+                        String.fromCharCode(
+                            65 + optionIndex
+                        );
+
+
+                    optionDiv.textContent =
+                        `${letter}. ${option}`;
+
+
+                    card.appendChild(
+                        optionDiv
+                    );
+
+                }
+            );
+
+
+            /* CORRECT ANSWER */
+
+            const answer =
+                document.createElement(
+                    "div"
+                );
+
+
+            answer.className =
+                "correct-answer";
+
+
+            answer.textContent =
+                `Correct Answer: ${
+                    question.correctAnswer || ""
+                }`;
+
+
+            card.appendChild(
+                answer
+            );
+
+
+            /* DELETE BUTTON */
+
+            const deleteButton =
+                document.createElement(
+                    "button"
+                );
+
+
+            deleteButton.type =
+                "button";
+
+
+            deleteButton.className =
+                "delete-btn";
+
+
+            deleteButton.textContent =
+                "Delete Question";
+
+
+            deleteButton.addEventListener(
+                "click",
+                function() {
+
+                    deleteQuestion(
+                        question._id
+                    );
+
+                }
+            );
+
+
+            card.appendChild(
+                deleteButton
+            );
+
+
+            list.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   UPDATE STATISTICS
+===================================================== */
+
+function updateStatistics() {
+
+    const count =
+        questionList.length;
+
+
+    const totalMarks =
+        questionList.reduce(
+            function(
+                total,
+                question
+            ) {
+
+                return (
+                    total +
+                    (Number(question.marks) || 1)
+                );
+
+            },
+            0
+        );
+
+
+    document.getElementById(
+        "questionStat"
+    ).textContent =
+        count;
+
+
+    document.getElementById(
+        "totalMarksStat"
+    ).textContent =
+        totalMarks;
+
+
+    document.getElementById(
+        "questionCount"
+    ).textContent =
+        `Questions: ${count}`;
+
+}
+
+
+/* =====================================================
+   CORRECT ANSWER DROPDOWN
+===================================================== */
+
+function updateCorrectAnswerOptions() {
+
+    const select =
+        document.getElementById(
+            "correctAnswer"
+        );
+
+
+    const options = [
+        document.getElementById("option1"),
+        document.getElementById("option2"),
+        document.getElementById("option3"),
+        document.getElementById("option4")
+    ];
+
+
+    const currentValue =
+        select.value;
+
+
+    select.innerHTML = `
+
+        <option value="">
+            -- Select Correct Answer --
+        </option>
+
+    `;
+
+
+    options.forEach(
+        function(input, index) {
+
+            const value =
+                input.value.trim();
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                String(index);
+
+
+            option.textContent =
+                value
+                    ? `${String.fromCharCode(65 + index)}. ${value}`
+                    : `${String.fromCharCode(65 + index)}. Enter option first`;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    if (
+        currentValue !== ""
+    ) {
+
+        select.value =
+            currentValue;
+
+    }
+
+}
+
+
+/* =====================================================
+   UPDATE DROPDOWN WHEN OPTIONS CHANGE
+===================================================== */
+
+[
+    "option1",
+    "option2",
+    "option3",
+    "option4"
+].forEach(
+    function(id) {
+
+        document
+            .getElementById(id)
+            .addEventListener(
+                "input",
+                updateCorrectAnswerOptions
+            );
+
+    }
+);
+
+
+/* =====================================================
+   ADD QUESTION
+===================================================== */
+
+document
+    .getElementById(
+        "questionForm"
+    )
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+
+            console.log(
+                "ADD QUESTION BUTTON CLICKED"
+            );
+
+
+            if (!quizId) {
+
+                showMessage(
+                    "Quiz ID is missing. Open this page from Quiz Management.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (isSubmitting) {
+
+                return;
+
+            }
+
+
+            const questionText =
+                document
+                    .getElementById(
+                        "questionText"
+                    )
+                    .value
+                    .trim();
+
+
+            const options = [
+
+                document
+                    .getElementById(
+                        "option1"
+                    )
+                    .value
+                    .trim(),
+
+                document
+                    .getElementById(
+                        "option2"
+                    )
+                    .value
+                    .trim(),
+
+                document
+                    .getElementById(
+                        "option3"
+                    )
+                    .value
+                    .trim(),
+
+                document
+                    .getElementById(
+                        "option4"
+                    )
+                    .value
+                    .trim()
+
+            ];
+
+
+            const correctIndex =
+                document
+                    .getElementById(
+                        "correctAnswer"
+                    )
+                    .value;
+
+
+            const marks =
+                Number(
+                    document
+                        .getElementById(
+                            "marks"
+                        )
+                        .value
+                );
+
+
+            /* VALIDATION */
+
+            if (!questionText) {
+
+                showMessage(
+                    "Please enter the question.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                options.some(
+                    option => !option
+                )
+            ) {
+
+                showMessage(
+                    "Please enter all four options.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            const normalized =
+                options.map(
+                    option =>
+                        option
+                            .toLowerCase()
+                            .trim()
+                );
+
+
+            if (
+                new Set(normalized).size !==
+                options.length
+            ) {
+
+                showMessage(
+                    "All four options must be different.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                correctIndex === ""
+            ) {
+
+                showMessage(
+                    "Please select the correct answer.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (
+                !Number.isFinite(marks) ||
+                marks < 1
+            ) {
+
+                showMessage(
+                    "Marks must be at least 1.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * IMPORTANT:
+             * Backend expects correctAnswer
+             * as the actual option text.
+             */
+
+            const correctAnswer =
+                options[
+                    Number(correctIndex)
+                ];
+
+
+            const requestBody = {
+
+                questionText:
+                    questionText,
+
+                options:
+                    options,
+
+                correctAnswer:
+                    correctAnswer,
+
+                marks:
+                    marks
+
+            };
+
+
+            console.log(
+                "Question request:",
+                requestBody
+            );
+
+
+            try {
+
+                isSubmitting =
+                    true;
+
+
+                const button =
+                    document.getElementById(
+                        "addQuestionBtn"
+                    );
+
+
+                button.disabled =
+                    true;
+
+
+                button.textContent =
+                    "Adding Question...";
+
+
+                showMessage(
+                    "Adding question...",
+                    "info"
+                );
+
+
+                const data =
+                    await apiRequest(
+                        `/api/quizzes/${encodeURIComponent(quizId)}/questions`,
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    requestBody
+                                )
+
+                        }
+                    );
+
+
+                console.log(
+                    "Add question response:",
+                    data
+                );
+
+
+                if (!data.success) {
+
+                    throw new Error(
+                        data.message ||
+                        "Question was not added."
+                    );
+
+                }
+
+
+                showMessage(
+                    "✓ Question added successfully!",
+                    "success"
+                );
+
+
+                clearForm();
+
+
+                await loadQuestions();
+
+
+            }
+            catch(error) {
+
+                console.error(
+                    "ADD QUESTION ERROR:",
+                    error
+                );
+
+
+                showMessage(
+                    error.message ||
+                    "Failed to add question.",
+                    "error"
+                );
+
+            }
+            finally {
+
+                isSubmitting =
+                    false;
+
+
+                const button =
+                    document.getElementById(
+                        "addQuestionBtn"
+                    );
+
+
+                button.disabled =
+                    false;
+
+
+                button.textContent =
+                    "Add Question";
+
+            }
+
+        }
+    );
+
+
+/* =====================================================
+   DELETE QUESTION
+===================================================== */
+
+async function deleteQuestion(
+    questionId
+) {
+
+    if (!questionId) {
+
+        showMessage(
+            "Question ID is missing.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this question?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        showMessage(
+            "Deleting question...",
+            "info"
+        );
+
+
+        const data =
+            await apiRequest(
+                `/api/quizzes/${encodeURIComponent(quizId)}/questions/${encodeURIComponent(questionId)}`,
+                {
+
+                    method: "DELETE",
+
+                    headers: {
+
+                        "Accept":
+                            "application/json"
+
+                    }
+
+                }
+            );
+
+
+        if (!data.success) {
+
+            throw new Error(
+                data.message ||
+                "Question could not be deleted."
+            );
+
+        }
+
+
+        showMessage(
+            "Question deleted successfully.",
+            "success"
+        );
+
+
+        await loadQuestions();
+
+    }
+    catch(error) {
+
+        console.error(
+            "DELETE QUESTION ERROR:",
+            error
+        );
+
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CLEAR FORM
+===================================================== */
+
+function clearForm() {
+
+    document
+        .getElementById(
+            "questionForm"
+        )
+        .reset();
+
+
+    document
+        .getElementById(
+            "marks"
+        )
+        .value = 1;
+
+
+    updateCorrectAnswerOptions();
+
+}
+
+
+/* =====================================================
+   MESSAGE
+===================================================== */
+
+let messageTimer = null;
+
+
+function showMessage(
+    message,
+    type
+) {
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+
+    clearTimeout(
+        messageTimer
+    );
+
+
+    box.className =
+        `message ${type}`;
+
+
+    box.textContent =
+        message;
+
+
+    box.style.display =
+        "block";
+
+
+    messageTimer =
+        setTimeout(
+            function() {
+
+                box.style.display =
+                    "none";
+
+            },
+            5000
+        );
+
+}
+
+
+function hideMessage() {
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+
+    box.style.display =
+        "none";
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(
+    value
+) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        value ?? "";
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout() {
+
+    try {
+
+        await fetch(
+            "/api/auth/logout",
+            {
+
+                method: "POST",
+
+                credentials:
+                    "include"
+
+            }
+        );
+
+    }
+    catch(error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+</script>
+
+
+</body>
+
+</html>

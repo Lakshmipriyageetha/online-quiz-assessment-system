@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Take Quiz - QuizMaster</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f4f6f9;
+
+            color: #1f2937;
+
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        nav {
+            background: #ffffff;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            padding: 18px 6%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+
+            font-weight: 700;
+
+            color: #2563eb;
+        }
+
+        .nav-links {
+            display: flex;
+
+            gap: 25px;
+
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+
+            color: #374151;
+
+            font-size: 15px;
+
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .container {
+            width: 90%;
+
+            max-width: 1000px;
+
+            margin: 35px auto 60px;
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            text-align: center;
+
+            padding: 70px 20px;
+
+            font-size: 18px;
+
+            color: #6b7280;
+        }
+
+        .spinner {
+            width: 42px;
+
+            height: 42px;
+
+            border: 4px solid #e5e7eb;
+
+            border-top: 4px solid #2563eb;
+
+            border-radius: 50%;
+
+            margin: 0 auto 15px;
+
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+
+            100% {
+                transform: rotate(360deg);
+            }
+
+        }
+
+        /* =========================
+           QUIZ HEADER
+        ========================= */
+
+        .quiz-header {
+            background: #ffffff;
+
+            border-radius: 14px;
+
+            padding: 28px;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .quiz-title {
+            font-size: 30px;
+
+            color: #111827;
+
+            margin-bottom: 10px;
+        }
+
+        .quiz-description {
+            color: #6b7280;
+
+            line-height: 1.6;
+
+            margin-bottom: 20px;
+        }
+
+        .quiz-info {
+            display: flex;
+
+            gap: 12px;
+
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            background: #f3f4f6;
+
+            padding: 10px 15px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            color: #374151;
+
+            font-weight: 600;
+        }
+
+        /* =========================
+           TIMER
+        ========================= */
+
+        .timer {
+            position: sticky;
+
+            top: 10px;
+
+            z-index: 10;
+
+            background: #111827;
+
+            color: #ffffff;
+
+            border-radius: 10px;
+
+            padding: 14px 20px;
+
+            margin-bottom: 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .timer-label {
+            font-weight: 600;
+        }
+
+        .timer-value {
+            font-size: 22px;
+
+            font-weight: 700;
+
+            font-family: monospace;
+        }
+
+        .timer.warning {
+            background: #b45309;
+        }
+
+        .timer.danger {
+            background: #dc2626;
+        }
+
+        /* =========================
+           QUESTION CARD
+        ========================= */
+
+        .question-card {
+            background: #ffffff;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 20px;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-number {
+            color: #2563eb;
+
+            font-weight: 700;
+
+            margin-bottom: 10px;
+
+            font-size: 14px;
+        }
+
+        .question-text {
+            font-size: 19px;
+
+            font-weight: 600;
+
+            line-height: 1.5;
+
+            margin-bottom: 20px;
+
+            color: #111827;
+        }
+
+        .option {
+            display: block;
+
+            border: 1px solid #d1d5db;
+
+            border-radius: 9px;
+
+            padding: 14px 16px;
+
+            margin-bottom: 10px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+
+            background: #ffffff;
+        }
+
+        .option:hover {
+            border-color: #2563eb;
+
+            background: #eff6ff;
+        }
+
+        .option input {
+            margin-right: 10px;
+
+            cursor: pointer;
+        }
+
+        .marks {
+            margin-top: 15px;
+
+            color: #6b7280;
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           SUBMIT
+        ========================= */
+
+        .submit-area {
+            background: #ffffff;
+
+            padding: 25px;
+
+            border-radius: 14px;
+
+            text-align: center;
+
+            box-shadow:
+                0 3px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .submit-btn {
+            border: none;
+
+            background: #2563eb;
+
+            color: white;
+
+            padding: 14px 35px;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .submit-btn:disabled {
+            background: #9ca3af;
+
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error {
+            background: #fee2e2;
+
+            color: #991b1b;
+
+            padding: 20px;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            margin-top: 30px;
+        }
+
+        .back-btn {
+            display: inline-block;
+
+            margin-top: 15px;
+
+            padding: 10px 18px;
+
+            background: #374151;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 7px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            nav {
+                padding: 15px 4%;
+            }
+
+            .nav-links {
+                gap: 12px;
+            }
+
+            .nav-links a {
+                font-size: 13px;
+            }
+
+            .container {
+                width: 94%;
+
+                margin-top: 20px;
+            }
+
+            .quiz-title {
+                font-size: 24px;
+            }
+
+            .question-text {
+                font-size: 17px;
+            }
+
+            .timer {
+                padding: 12px 15px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav>
+
+        <div class="logo">
+            QuizMaster
+        </div>
+
+        <div class="nav-links">
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="results.html">
+                My Results
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN CONTAINER
+    ========================= -->
+
+    <main class="container">
+
+        <!-- Loading -->
+
+        <div id="loading" class="loading">
+
+            <div class="spinner"></div>
+
+            Loading quiz...
+
+        </div>
+
+
+        <!-- Quiz Content -->
+
+        <div id="quizContent" style="display:none;">
+
+            <!-- Quiz Header -->
+
+            <section class="quiz-header">
+
+                <h1
+                    id="quizTitle"
+                    class="quiz-title"
+                >
+                    Quiz
+                </h1>
+
+                <p
+                    id="quizDescription"
+                    class="quiz-description"
+                ></p>
+
+                <div class="quiz-info">
+
+                    <div
+                        id="quizSubject"
+                        class="info-box"
+                    >
+                        Subject
+                    </div>
+
+                    <div
+                        id="quizDuration"
+                        class="info-box"
+                    >
+                        Duration
+                    </div>
+
+                    <div
+                        id="questionCount"
+                        class="info-box"
+                    >
+                        Questions
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- Timer -->
+
+            <div
+                id="timer"
+                class="timer"
+            >
+
+                <span class="timer-label">
+                    Time Remaining
+                </span>
+
+                <span
+                    id="timerValue"
+                    class="timer-value"
+                >
+                    00:00
+                </span>
+
+            </div>
+
+
+            <!-- Questions -->
+
+            <form id="quizForm">
+
+                <div id="questionsContainer"></div>
+
+                <div class="submit-area">
+
+                    <button
+                        type="submit"
+                        id="submitButton"
+                        class="submit-btn"
+                    >
+                        Submit Quiz
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- Error -->
+
+        <div
+            id="errorMessage"
+            class="error"
+            style="display:none;"
+        ></div>
+
+    </main>
+
+
+    <script>
+
+        // =====================================================
+        // GET QUIZ ID FROM URL
+        // Example:
+        // student-quiz.html?id=QUIZ_ID
+        // =====================================================
+
+        const urlParams =
+            new URLSearchParams(window.location.search);
+
+        const quizId =
+            urlParams.get("id");
+
+
+        // =====================================================
+        // VARIABLES
+        // =====================================================
+
+        let quizData = null;
+
+        let timerInterval = null;
+
+        let remainingSeconds = 0;
+
+        let quizSubmitted = false;
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            loadQuiz
+        );
+
+
+        // =====================================================
+        // LOAD QUIZ
+        // =====================================================
+
+        async function loadQuiz() {
+
+            if (!quizId) {
+
+                showError(
+                    "Quiz ID is missing."
+                );
+
+                return;
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/api/quizzes/${encodeURIComponent(quizId)}/take`,
+                        {
+                            method: "GET",
+
+                            credentials: "include",
+
+                            cache: "no-store"
+                        }
+                    );
+
+
+                if (response.status === 401) {
+
+                    window.location.href =
+                        "login.html";
+
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok || !data.success) {
+
+                    throw new Error(
+                        data.message ||
+                        "Failed to load quiz"
+                    );
+                }
+
+
+                quizData =
+                    data.quiz;
+
+
+                displayQuiz(
+                    quizData
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Load quiz error:",
+                    error
+                );
+
+                showError(
+                    error.message ||
+                    "Unable to load quiz."
+                );
+            }
+        }
+
+
+        // =====================================================
+        // DISPLAY QUIZ
+        // =====================================================
+
+        function displayQuiz(quiz) {
+
+            document.getElementById(
+                "loading"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "quizContent"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "quizTitle"
+            ).textContent =
+                quiz.title;
+
+
+            document.getElementById(
+                "quizDescription"
+            ).textContent =
+                quiz.description;
+
+
+            document.getElementById(
+                "quizSubject"
+            ).textContent =
+                `Subject: ${quiz.subject}`;
+
+
+            document.getElementById(
+                "quizDuration"
+            ).textContent =
+                `Duration: ${quiz.duration} minutes`;
+
+
+            document.getElementById(
+                "questionCount"
+            ).textContent =
+                `Questions: ${quiz.questions.length}`;
+
+
+            renderQuestions(
+                quiz.questions
+            );
+
+
+            startTimer(
+                quiz.duration
+            );
+        }
+
+
+        // =====================================================
+        // RENDER QUESTIONS
+        // =====================================================
+
+        function renderQuestions(questions) {
+
+            const container =
+                document.getElementById(
+                    "questionsContainer"
+                );
+
+
+            if (!questions.length) {
+
+                container.innerHTML = `
+                    <div class="error">
+                        This quiz does not have any questions yet.
+                    </div>
+                `;
+
+                document.getElementById(
+                    "submitButton"
+                ).disabled = true;
+
+                return;
+            }
+
+
+            container.innerHTML =
+                questions.map(
+                    (question, index) => {
+
+                        const optionsHTML =
+                            question.options
+                                .map(
+                                    (option, optionIndex) => {
+
+                                        const safeOption =
+                                            escapeHtml(
+                                                option
+                                            );
+
+                                        return `
+                                            <label class="option">
+
+                                                <input
+                                                    type="radio"
+                                                    name="question_${question._id}"
+                                                    value="${safeOption}"
+                                                >
+
+                                                ${safeOption}
+
+                                            </label>
+                                        `;
+                                    }
+                                )
+                                .join("");
+
+
+                        return `
+                            <div class="question-card">
+
+                                <div class="question-number">
+                                    Question ${index + 1}
+                                </div>
+
+                                <div class="question-text">
+                                    ${escapeHtml(
+                                        question.questionText
+                                    )}
+                                </div>
+
+                                ${optionsHTML}
+
+                                <div class="marks">
+                                    Marks: ${question.marks}
+                                </div>
+
+                            </div>
+                        `;
+                    }
+                )
+                .join("");
+        }
+
+
+        // =====================================================
+        // TIMER
+        // =====================================================
+
+        function startTimer(minutes) {
+
+            remainingSeconds =
+                Number(minutes) * 60;
+
+
+            updateTimerDisplay();
+
+
+            timerInterval =
+                setInterval(
+                    () => {
+
+                        remainingSeconds--;
+
+
+                        updateTimerDisplay();
+
+
+                        if (
+                            remainingSeconds <= 0
+                        ) {
+
+                            clearInterval(
+                                timerInterval
+                            );
+
+
+                            alert(
+                                "Time is up! Your quiz will be submitted."
+                            );
+
+
+                            submitQuiz();
+
+                        }
+
+                    },
+                    1000
+                );
+        }
+
+
+        // =====================================================
+        // UPDATE TIMER DISPLAY
+        // =====================================================
+
+        function updateTimerDisplay() {
+
+            const timer =
+                document.getElementById(
+                    "timer"
+                );
+
+
+            const timerValue =
+                document.getElementById(
+                    "timerValue"
+                );
+
+
+            const minutes =
+                Math.floor(
+                    remainingSeconds / 60
+                );
+
+
+            const seconds =
+                remainingSeconds % 60;
+
+
+            timerValue.textContent =
+                `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+
+
+            timer.classList.remove(
+                "warning",
+                "danger"
+            );
+
+
+            if (
+                remainingSeconds <= 60
+            ) {
+
+                timer.classList.add(
+                    "danger"
+                );
+
+            } else if (
+                remainingSeconds <= 300
+            ) {
+
+                timer.classList.add(
+                    "warning"
+                );
+            }
+        }
+
+
+        // =====================================================
+        // SUBMIT FORM
+        // =====================================================
+
+        document.getElementById(
+            "quizForm"
+        ).addEventListener(
+            "submit",
+            function (event) {
+
+                event.preventDefault();
+
+                submitQuiz();
+
+            }
+        );
+
+
+        // =====================================================
+        // SUBMIT QUIZ
+        // =====================================================
+
+        async function submitQuiz() {
+
+            if (quizSubmitted) {
+                return;
+            }
+
+
+            if (!quizData) {
+                return;
+            }
+
+
+            const unanswered =
+                quizData.questions.filter(
+                    question => {
+
+                        const selected =
+                            document.querySelector(
+                                `input[name="question_${question._id}"]:checked`
+                            );
+
+                        return !selected;
+                    }
+                );
+
+
+            if (
+                unanswered.length > 0 &&
+                remainingSeconds > 0
+            ) {
+
+                const confirmSubmit =
+                    confirm(
+                        `You have ${unanswered.length} unanswered question(s). Do you want to submit?`
+                    );
+
+
+                if (!confirmSubmit) {
+                    return;
+                }
+            }
+
+
+            quizSubmitted = true;
+
+
+            if (timerInterval) {
+
+                clearInterval(
+                    timerInterval
+                );
+            }
+
+
+            const submitButton =
+                document.getElementById(
+                    "submitButton"
+                );
+
+
+            submitButton.disabled =
+                true;
+
+
+            submitButton.textContent =
+                "Submitting...";
+
+
+            const answers =
+                quizData.questions.map(
+                    question => {
+
+                        const selected =
+                            document.querySelector(
+                                `input[name="question_${question._id}"]:checked`
+                            );
+
+
+                        return {
+                            questionId:
+                                question._id,
+
+                            selectedAnswer:
+                                selected
+                                    ? selected.value
+                                    : null
+                        };
+                    }
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/results/submit",
+                        {
+                            method: "POST",
+
+                            credentials: "include",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                quizId:
+                                    quizData._id,
+
+                                answers:
+                                    answers
+                            })
+                        }
+                    );
+
+
+                if (response.status === 401) {
+
+                    window.location.href =
+                        "login.html";
+
+                    return;
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (
+                    !response.ok ||
+                    !data.success
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "Failed to submit quiz"
+                    );
+                }
+
+
+                alert(
+                    "Quiz submitted successfully!"
+                );
+
+
+                window.location.href =
+                    `result-details.html?id=${encodeURIComponent(
+                        data.result._id
+                    )}`;
+
+
+            } catch (error) {
+
+                console.error(
+                    "Submit quiz error:",
+                    error
+                );
+
+
+                quizSubmitted =
+                    false;
+
+
+                submitButton.disabled =
+                    false;
+
+
+                submitButton.textContent =
+                    "Submit Quiz";
+
+
+                alert(
+                    error.message ||
+                    "Failed to submit quiz."
+                );
+            }
+        }
+
+
+        // =====================================================
+        // ESCAPE HTML
+        // =====================================================
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+        }
+
+
+        // =====================================================
+        // SHOW ERROR
+        // =====================================================
+
+        function showError(message) {
+
+            document.getElementById(
+                "loading"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "quizContent"
+            ).style.display = "none";
+
+
+            const errorElement =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+
+            errorElement.style.display =
+                "block";
+
+
+            errorElement.innerHTML = `
+                ${escapeHtml(message)}
+
+                <br>
+
+                <a
+                    href="dashboard.html"
+                    class="back-btn"
+                >
+                    Back to Dashboard
+                </a>
+            `;
+        }
+
+    </script>
+
+</body>
+
+</html>
